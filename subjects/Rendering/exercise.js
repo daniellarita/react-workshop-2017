@@ -28,10 +28,47 @@ const DATA = {
   ]
 }
 
+let foodType = 'mexican';
+let sortAscending = false;
+
+function updateThePage(){
+  ReactDOM.render(<Menu/>, document.getElementById('app'))
+}
+
+function updateFoodType(event){
+  foodType = event.target.value;
+  updateThePage();
+}
+
+function toggleSortOrder(){
+  sortAscending = !sortAscending;
+  updateThePage();
+}
+
+
 function Menu() {
+
+  const items = DATA.items.filter(item => item.type === foodType)
+  .sort(sortBy(sortAscending ? 'name' : '-name'))
+  .map(item =>{
+    return (
+      <li key={item.id}>{item.name}</li>
+    );
+  });
+
   return (
     <div>
-      Open the console, you have failing tests.
+      <h1>{DATA.title}</h1>
+      <ul>
+        {items}
+      </ul>
+      <select onChange={updateFoodType}>
+        <option>mexican</option>
+        <option>english</option>
+      </select>
+      <button onClick={toggleSortOrder}>
+        toggle sort order
+      </button>
     </div>
   )
 }

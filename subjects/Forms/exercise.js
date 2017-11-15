@@ -19,37 +19,85 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import serializeForm from 'form-serialize'
 
+const defaultName = "Name";
+const defaultState = "NY";
 class CheckoutForm extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      billingName: defaultName,
+      billingState: defaultState,
+      shippingName: '',
+      shippingState: '',
+      checked: false,
+    };
+  }
+  handleNameChange = (e) => {
+    console.log(e.target.value);
+    this.setState({billingName: e.target.value});
+  }
+
+  handleStateChange = (e) => {
+    console.log(e.target.value);
+    this.setState({billingState: e.target.value});
+  }
+
+  onCheck = (e) => {
+    console.log(e.target.checked);
+    this.setState({checked:e.target.checked});
+  }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(this.state)
+  }
   render() {
     return (
       <div>
         <h1>Checkout</h1>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <fieldset>
             <legend>Billing Address</legend>
             <p>
-              <label>Billing Name: <input type="text"/></label>
+              <label>Billing Name: <input
+                defaultValue={this.state.billingName}
+                type="text"
+                onChange={this.handleNameChange}/></label>
             </p>
             <p>
-              <label>Billing State: <input type="text" size="2"/></label>
+              <label>Billing State: <input type="text" size="2"
+                defaultValue={this.state.billingState}
+                onChange={this.handleStateChange}/></label>
             </p>
           </fieldset>
 
           <br/>
 
           <fieldset>
-            <label><input type="checkbox"/> Same as billing</label>
+            <label><input
+              type="checkbox"
+              onChange={this.onCheck}
+              defaultValue={this.state.checked}
+              /> Same as billing</label>
             <legend>Shipping Address</legend>
             <p>
-              <label>Shipping Name: <input type="text"/></label>
+              <label>Shipping Name: <input type="text"
+                value={this.state.checked ? this.state.billingName : this.state.shippingName}
+                onChange={event => this.setState({shippingName: event.target.value})}
+                readOnly={this.state.checked}
+                /></label>
             </p>
             <p>
-              <label>Shipping State: <input type="text" size="2"/></label>
+              <label>Shipping State: <input type="text" size="2"
+                value={this.state.checked ? this.state.billingState : this.state.shippingState}
+                onChange={event => this.setState({shippingState: event.target.value})}
+                readOnly={this.state.checked}
+                /></label>
             </p>
           </fieldset>
 
           <p>
-            <button>Submit</button>
+            <button>Submit
+            </button>
           </p>
         </form>
       </div>
