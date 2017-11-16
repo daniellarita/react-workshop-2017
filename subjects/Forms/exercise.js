@@ -48,7 +48,9 @@ class CheckoutForm extends React.Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state)
+    // console.log(this.state)
+    const values = serializeForm(e.target, {hash: true})
+    console.log(values)
   }
   render() {
     return (
@@ -59,12 +61,14 @@ class CheckoutForm extends React.Component {
             <legend>Billing Address</legend>
             <p>
               <label>Billing Name: <input
+                name="billingName"
                 defaultValue={this.state.billingName}
                 type="text"
                 onChange={this.handleNameChange}/></label>
             </p>
             <p>
               <label>Billing State: <input type="text" size="2"
+                name="billingState"
                 defaultValue={this.state.billingState}
                 onChange={this.handleStateChange}/></label>
             </p>
@@ -84,6 +88,7 @@ class CheckoutForm extends React.Component {
                 value={this.state.checked ? this.state.billingName : this.state.shippingName}
                 onChange={event => this.setState({shippingName: event.target.value})}
                 readOnly={this.state.checked}
+                name="shipname"
                 /></label>
             </p>
             <p>

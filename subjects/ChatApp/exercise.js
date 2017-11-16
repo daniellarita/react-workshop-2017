@@ -42,15 +42,61 @@ unsubscribe() // stop listening for new messages
 The world is your oyster!
 */
 
+function groupMessages(messages){
+    const groups = [];
+    messages.forEach(message => {
+      
+    })
+    return groups;
+}
+
 class Chat extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      auth: null,
+      messages: []
+    }
+  }
+  componentDidMount(){
+    login((error,auth) => {
+      this.setState({auth})
+    })
+    subscribeToMessages(messages => {
+      this.setState({ messages })
+    })
+  }
   render() {
+    const { auth, messages } = this.state;
+    // return (
+    //   this.state.auth ? <div>{this.state.auth.github.username}</div> : <div>Logging in...</div>
+    // )
+    if (!this.state.auth)
+      return <div>Logging in...</div>
+
+    const messageGroups = groupMessages(messages);
     return (
       <div className="chat">
         <header className="chat-header">
           <h1 className="chat-title">HipReact</h1>
-          <p className="chat-message-count"># messages: 3</p>
+          <p className="chat-message-count"># messages: {this.state.messages.length}</p>
         </header>
         <div className="messages">
+          <ol className="message-groups">
+            {messageGroups.map(group => (
+              <li className="message-group">
+                <div className="message-group-avatar">
+                  <img src={group.avatarURL}/>
+                </div>
+                <ol className="messages">
+                  {group.messages.map(message(
+                    <li key={message.id} className="message">{message.text}</li>
+                  ))}
+                </ol>
+              </li>
+            ))}
+          </ol>
+          {/*
           <ol className="message-groups">
             <li className="message-group">
               <div className="message-group-avatar">
@@ -81,10 +127,11 @@ class Chat extends React.Component {
                 <img src="https://avatars1.githubusercontent.com/u/92839"/>
               </div>
               <ol className="messages">
-                <li className="message">:'(</li>
+                <li className="message">:(</li>
               </ol>
             </li>
           </ol>
+          */}
         </div>
         <form className="new-message-form">
           <div className="new-message">
