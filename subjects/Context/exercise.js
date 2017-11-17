@@ -21,18 +21,40 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
 class Form extends React.Component {
+  static childContextTypes = {
+    form: PropTypes.shape({
+      onSubmit: PropTypes.func
+    })
+  }
+
+  getChildContext() {
+    return {
+      form: {
+        onSubmit: this.props.onSubmit
+      }
+    }
+  }
+
   render() {
     return <div>{this.props.children}</div>
   }
 }
 
 class SubmitButton extends React.Component {
+  static contextTypes = {
+    form: PropTypes.shape({
+      onSubmit: PropTypes.func
+    })
+  }
   render() {
-    return <button>{this.props.children}</button>
+    console.log(this.context, "child context")
+    return <button onClick={this.context.form.onSubmit}
+      >{this.props.children}</button>
   }
 }
 
 class TextInput extends React.Component {
+
   render() {
     return (
       <input
