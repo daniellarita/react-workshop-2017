@@ -16,7 +16,42 @@ import PropTypes from 'prop-types'
 import * as styles from './styles'
 
 const withMouse = (Component) => {
-  return Component
+
+  return class extends React.Component {
+    state = {
+      x:0,
+      y:0
+    }
+    handleMouseMove = (event) => {
+      this.setState({
+        x: event.clientX,
+        y: event.clientY
+      })
+    }
+    render() {
+      return(
+        <div onMouseMove={this.handleMouseMove}>
+          <Component {...this.props} mouse={this.state}/>
+        </div>
+      );
+    }
+  }
+}
+
+const withCat = (Component) => {
+
+  return class extends React.Component {
+    state = {
+      x:0,
+      y:0
+    }
+
+    render() {
+      return(
+        <Component {...this.props}/>
+      );
+    }
+  }
 }
 
 class App extends React.Component {
@@ -42,6 +77,6 @@ class App extends React.Component {
   }
 }
 
-const AppWithMouse = withMouse(App)
+const AppWithMouse = withCat(withMouse(App))
 
 ReactDOM.render(<AppWithMouse/>, document.getElementById('app'))

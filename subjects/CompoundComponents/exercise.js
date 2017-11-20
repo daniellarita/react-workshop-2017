@@ -29,23 +29,32 @@ import PropTypes from 'prop-types'
 
 class RadioGroup extends React.Component {
   static propTypes = {
-    defaultValue: PropTypes.string
+    defaultValue: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func
   }
 
   render() {
-    return <div>{this.props.children}</div>
+    const value = this.props.value || this.props.defaultValue
+    const children = React.Children.map(this.props.children, child => (
+      React.cloneElement(child, { isSelected: child.props.value === value,
+                                  onClick: this.props.onChange})
+    ))
+    return <div>{children}</div>
   }
 }
 
 class RadioOption extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value: PropTypes.string,
+    isSelected: PropTypes.bool,
+    onClick: PropTypes.func
   }
 
   render() {
     return (
       <div>
-        <RadioIcon isSelected={false}/> {this.props.children}
+        <RadioIcon isSelected={this.props.isSelected} onClick={() => this.props.onClick(this.props.value)}/> {this.props.children}
       </div>
     )
   }
@@ -53,12 +62,14 @@ class RadioOption extends React.Component {
 
 class RadioIcon extends React.Component {
   static propTypes = {
-    isSelected: PropTypes.bool.isRequired
+    isSelected: PropTypes.bool.isRequired,
+    onClick: PropTypes.func
   }
 
   render() {
     return (
       <div
+        onClick={this.props.onClick}
         style={{
           borderColor: '#ccc',
           borderWidth: 3,
@@ -75,12 +86,21 @@ class RadioIcon extends React.Component {
 }
 
 class App extends React.Component {
+
+  state = {
+    selectedValue: ''
+  }
+
+  handleRadioSelection = (selection) => {
+    this.setState({selectedValue: selection})
+  }
+
   render() {
     return (
       <div>
         <h1>♬ It's about time that we all turned off the radio ♫</h1>
 
-        <RadioGroup defaultValue="fm">
+        <RadioGroup defaultValue="fm" value={this.state.selectedValue} onChange={this.handleRadioSelection}>
           <RadioOption value="am">AM</RadioOption>
           <RadioOption value="fm">FM</RadioOption>
           <RadioOption value="tape">Tape</RadioOption>
